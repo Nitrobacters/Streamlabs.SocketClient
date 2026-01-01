@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Streamlabs.SocketClient.Events.Abstractions;
+using Streamlabs.SocketClient.Converters;
 
 namespace Streamlabs.SocketClient.InternalExtensions;
 
@@ -10,8 +11,14 @@ internal static class SerializationExtensions
     {
         AllowTrailingCommas = false,
         NumberHandling = JsonNumberHandling.AllowReadingFromString,
-        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip,
     };
+
+    static SerializationExtensions()
+    {
+        Options.Converters.Add(new FlexibleStringConverter());
+        Options.Converters.Add(new IntStringConverter());
+    }
 
     private static readonly IReadOnlyCollection<IStreamlabsEvent> Empty = Array.Empty<IStreamlabsEvent>();
 
